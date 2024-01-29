@@ -8,8 +8,6 @@ import java.lang.annotation.*;
 public @interface Loggable {
     boolean showValues() default true;
 
-    boolean showAllParameters() default true;
-
     String[] showParameters() default {};
 
     String[] hideParameters() default {};

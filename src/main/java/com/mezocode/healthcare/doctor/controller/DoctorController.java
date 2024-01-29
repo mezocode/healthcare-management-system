@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping("/doctors")
 @RequiredArgsConstructor
 @Slf4j
-@Loggable(hideParameters = {"name"})
+@Loggable
 public class DoctorController {
 
     private final DoctorService doctorService;
@@ -34,7 +34,6 @@ public class DoctorController {
 
 
     @GetMapping("/{id}")
-    @Loggable(showParameters = {"name"})
     public DoctorDto getDoctor(@PathVariable Long id, @RequestParam String name, @RequestParam String date) {
         return doctorService.getDoctor(id, name, date);
     }

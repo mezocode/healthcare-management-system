@@ -10,7 +10,7 @@ public @interface Loggable {
 
     boolean showAllParameters() default true;
 
-    String[] showOnlyParameters() default {};
+    String[] showParameters() default {};
 
     String[] hideParameters() default {};
 }

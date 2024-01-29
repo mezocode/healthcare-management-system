@@ -1,12 +1,14 @@
 package com.mezocode.healthcare.code;
 
 import com.mezocode.healthcare.shared.annotation.Loggable;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
@@ -16,10 +18,8 @@ import java.util.Set;
 
 @Aspect
 @Component
+@Slf4j
 public class LoggingAspect {
-
-    private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
-
 
     // Pointcut for all methods within classes annotated with @Loggable
     @Pointcut("within(@com.mezocode.healthcare.shared.annotation.Loggable *)")
@@ -37,7 +37,7 @@ public class LoggingAspect {
         Object result = joinPoint.proceed();
         long endTime = System.currentTimeMillis();
 
-        logger.info("Execution time of {} is {}ms", joinPoint.getSignature().getName(), (endTime - startTime));
+        log.info("Execution time of {} is {}ms", joinPoint.getSignature().getName(), (endTime - startTime));
         return result;
     }
 
@@ -57,7 +57,7 @@ public class LoggingAspect {
 
         // Get attributes from the annotation
         boolean showValues = annotation.showValues();
-        Set<String> showOnlyParameters = new HashSet<>(Arrays.asList(annotation.showOnlyParameters()));
+        Set<String> showOnlyParameters = new HashSet<>(Arrays.asList(annotation.showParameters()));
         Set<String> hideParameters = new HashSet<>(Arrays.asList(annotation.hideParameters()));
 
         // Get method details
@@ -97,7 +97,7 @@ public class LoggingAspect {
 
         signatureBuilder.append(")");
 
-        logger.info(signatureBuilder.toString());
+        log.info(signatureBuilder.toString());
     }
 
 }

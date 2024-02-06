@@ -3,6 +3,7 @@ package com.mezocode.healthcare.doctor.controller;
 import com.mezocode.healthcare.doctor.dto.DoctorDto;
 import com.mezocode.healthcare.doctor.service.DoctorService;
 import com.mezocode.healthcare.patient.domain.Patient;
+import com.mezocode.healthcare.shared.annotation.LogExecution;
 import com.mezocode.healthcare.shared.annotation.Loggable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,19 +17,19 @@ import java.util.List;
 @RequestMapping("/doctors")
 @RequiredArgsConstructor
 @Slf4j
-@Loggable
+@Loggable(hideParameters = {"name"})
 public class DoctorController {
 
     private final DoctorService doctorService;
 
     @GetMapping
+    @LogExecution
     public List<DoctorDto> getAllDoctors() {
         return doctorService.getAllDoctors();
     }
 
     @PostMapping("/captcha")
     public String captcha(@RequestBody  RecaptchaResponse recaptchaResponse) {
-        log.info("Recaptcha response: " + recaptchaResponse.getRecaptchaResponse());
         return doctorService.captcha(recaptchaResponse.getRecaptchaResponse());
     }
 

@@ -1,4 +1,4 @@
-package com.mezocode.healthcare.code;
+package com.mezocode.healthcare.shared.aop;
 
 import com.mezocode.healthcare.shared.annotation.Loggable;
 import lombok.extern.slf4j.Slf4j;

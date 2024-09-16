@@ -1,24 +1,16 @@
 package com.mezocode.healthcare.doctor.service;
 
+import com.mezocode.healthcare.appointment.domain.Appointment;
 import com.mezocode.healthcare.doctor.domain.Doctor;
 import com.mezocode.healthcare.doctor.dto.DoctorDto;
 import com.mezocode.healthcare.doctor.repository.DoctorRepository;
 import com.mezocode.healthcare.patient.domain.Patient;
-import com.mezocode.healthcare.appointment.domain.Appointment;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
-
-import java.net.http.HttpClient;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -27,11 +19,12 @@ public class DoctorService {
     private final DoctorRepository doctorRepository;
     private final RecaptchaService recaptchaService;
 
-    public List<DoctorDto> getAllDoctors() {
-        return doctorRepository.findAll()
-                .stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+    public Page<DoctorDto> getAllDoctors() {
+
+        PageRequest pageRequest = PageRequest.of(0, 5);
+        return doctorRepository.findAll(pageRequest)
+                .map(this::convertToDto);
+
     }
 
     private Doctor getDoctorById(Long id) {

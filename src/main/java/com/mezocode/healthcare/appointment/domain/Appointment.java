@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -18,35 +19,34 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "doctor_id")
     private Doctor doctor;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "patient_id")
     private Patient patient;
 
     private LocalDateTime appointmentTime;
-
     private String status;
 
-    // Getters and Setters
-
-    public boolean reschedule(LocalDateTime newAppointmentTime) {
-        if (doctor.isAvailable(newAppointmentTime)) {
-            return false;
+    public void setDoctor(Doctor doctor) {
+        if (this.doctor != null) {
+            this.doctor.getAppointments().remove(this);
         }
-        this.appointmentTime = newAppointmentTime;
-        return true;
+        this.doctor = doctor;
+        if (doctor != null) {
+            doctor.getAppointments().add(this);
+        }
     }
 
-    public void cancel() {
-        this.status = "Cancelled";
-    }
-
-    public boolean isWithDoctor(Doctor doctor) {
-        return this.doctor.equals(doctor);
-    }
-
-    public boolean isWithPatient(Patient patient) {
-        return this.patient.equals(patient);
+    public void setPatient(Patient patient) {
+        if (this.patient != null) {
+            this.patient.getAppointments().remove(this);
+        }
+        this.patient = patient;
+        if (patient != null) {
+            patient.getAppointments().add(this);
+        }
     }
 }

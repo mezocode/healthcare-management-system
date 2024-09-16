@@ -1,4 +1,4 @@
-package com.mezocode.healthcare.response;
+package com.mezocode.healthcare.shared.response;
 
 import java.util.List;
 import lombok.NoArgsConstructor;

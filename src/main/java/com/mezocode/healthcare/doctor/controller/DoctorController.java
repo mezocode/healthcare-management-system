@@ -3,8 +3,8 @@ package com.mezocode.healthcare.doctor.controller;
 import com.mezocode.healthcare.doctor.dto.DoctorDto;
 import com.mezocode.healthcare.doctor.service.DoctorService;
 import com.mezocode.healthcare.patient.domain.Patient;
-import com.mezocode.healthcare.response.Responseable;
-import com.mezocode.healthcare.response.RestResponse;
+import com.mezocode.healthcare.shared.response.Responseable;
+import com.mezocode.healthcare.shared.response.RestResponse;
 import com.mezocode.healthcare.shared.annotation.LogExecution;
 import com.mezocode.healthcare.shared.annotation.Loggable;
 import java.time.LocalDateTime;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.mezocode.healthcare.response.RestCollector.toResponseBody;
+import static com.mezocode.healthcare.shared.response.RestCollector.toResponseBody;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController

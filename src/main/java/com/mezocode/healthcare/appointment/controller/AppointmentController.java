@@ -3,8 +3,8 @@ package com.mezocode.healthcare.appointment.controller;
 import com.mezocode.healthcare.appointment.domain.Appointment;
 import com.mezocode.healthcare.appointment.dto.AppointmentDto;
 import com.mezocode.healthcare.appointment.service.AppointmentService;
-import com.mezocode.healthcare.response.Responseable;
-import com.mezocode.healthcare.response.RestResponse;
+import com.mezocode.healthcare.shared.response.Responseable;
+import com.mezocode.healthcare.shared.response.RestResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.mezocode.healthcare.response.RestCollector.toResponseBody;
+import static com.mezocode.healthcare.shared.response.RestCollector.toResponseBody;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 

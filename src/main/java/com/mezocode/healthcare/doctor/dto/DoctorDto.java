@@ -1,7 +1,7 @@
 package com.mezocode.healthcare.doctor.dto;
 
 import com.mezocode.healthcare.doctor.domain.Specialization;
-import com.mezocode.healthcare.response.Responseable;
+import com.mezocode.healthcare.shared.response.Responseable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

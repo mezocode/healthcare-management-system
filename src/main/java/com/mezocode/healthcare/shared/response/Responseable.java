@@ -1,4 +1,4 @@
-package com.mezocode.healthcare.response;
+package com.mezocode.healthcare.shared.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

@@ -5,15 +5,18 @@ import com.mezocode.healthcare.appointment.dto.AppointmentDto;
 import com.mezocode.healthcare.appointment.repository.AppointmentRepository;
 import com.mezocode.healthcare.doctor.domain.Doctor;
 import com.mezocode.healthcare.doctor.repository.DoctorRepository;
+import com.mezocode.healthcare.exception.AppointmentNotFoundException;
 import com.mezocode.healthcare.exception.DoctorNotFoundException;
 import com.mezocode.healthcare.exception.PatientNotFoundException;
-import com.mezocode.healthcare.exception.AppointmentNotFoundException;
 import com.mezocode.healthcare.patient.domain.Patient;
 import com.mezocode.healthcare.patient.repository.PatientRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
+import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +27,7 @@ public class AppointmentService {
 
     // Constructor for dependency injection
 
-    public Appointment scheduleAppointment(AppointmentDto appointmentDto) {
+    public AppointmentDto scheduleAppointment(AppointmentDto appointmentDto) {
         Doctor doctor = doctorRepository
                 .findById(appointmentDto.getDoctorId())
                 .orElseThrow(() -> new DoctorNotFoundException("Doctor with id " + appointmentDto.getDoctorId() + " not found"));
@@ -35,7 +38,22 @@ public class AppointmentService {
         Appointment appointment = doctor.scheduleAppointment(patient, appointmentDto.getAppointmentTime());
 
         // Save the new appointment to the repository
-        return appointmentRepository.save(appointment);
+        Appointment savedAppointment = appointmentRepository.save(appointment);
+
+        // Convert the saved Appointment entity to AppointmentDto
+        return convertToDto(savedAppointment);
+    }
+
+    private AppointmentDto convertToDto(Appointment appointment) {
+        AppointmentDto dto = new AppointmentDto();
+        dto.setId(appointment.getId());
+        dto.setDoctorId(appointment.getDoctor().getId());
+        dto.setPatientId(appointment.getPatient().getId());
+        dto.setAppointmentTime(appointment.getAppointmentTime());
+        dto.setStatus(appointment.getStatus());
+
+        // Set other fields as necessary
+        return dto;
     }
 
     public Appointment rescheduleAppointment(Long appointmentId, AppointmentDto updatedAppointment) {
@@ -60,11 +78,21 @@ public class AppointmentService {
         return appointmentRepository.save(appointment);
     }
 
-    public List<Appointment> getAppointmentsForPatient(Long patientId) {
+    public List<AppointmentDto> getAppointmentsForPatient(Long patientId) {
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new PatientNotFoundException("Patient with id " + patientId + " not found"));
 
         // Fetch and return all appointments for the given patient
-        return appointmentRepository.findByPatient(patient);
+        return appointmentRepository.findByPatient(patient)
+                .stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    public Page<AppointmentDto> getAllAppointments() {
+
+        Pageable pageable = PageRequest.of(0, 5);
+        return appointmentRepository.findAll(pageable)
+                .map(this::convertToDto);
     }
 }

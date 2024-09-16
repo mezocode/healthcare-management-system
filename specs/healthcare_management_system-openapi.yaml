@@ -1,0 +1,125 @@
+openapi: "3.1.0"
+info:
+  title: "healthcare_management_system API"
+  description: "healthcare_management_system API"
+  version: "1.0.0"
+servers:
+  - url: "https://healthcare_management_system"
+paths:
+  /appointments/schedule:
+    post:
+      summary: "POST appointments/schedule"
+      operationId: "scheduleAppointment"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AppointmentDto"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Appointment"
+components:
+  schemas:
+    AppointmentDto:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        doctorId:
+          type: "integer"
+          format: "int64"
+        patientId:
+          type: "integer"
+          format: "int64"
+        appointmentTime:
+          type: "string"
+          format: "date-time"
+        status:
+          type: "string"
+    Doctor:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        name:
+          type: "string"
+        specialization:
+          type: "string"
+          enum:
+            - "CARDIOLOGY"
+            - "NEUROLOGY"
+            - "ONCOLOGY"
+            - "PEDIATRICS"
+        yearsOfExperience:
+          type: "integer"
+          format: "int32"
+        contactInformation:
+          type: "string"
+        workingHours:
+          type: "string"
+        appointments:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Appointment"
+    Address:
+      type: "object"
+      properties:
+        street:
+          type: "string"
+        city:
+          type: "string"
+        state:
+          type: "string"
+        zipCode:
+          type: "string"
+    MedicalRecord:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        diagnosis:
+          type: "string"
+        treatment:
+          type: "string"
+        treatmentDate:
+          type: "string"
+          format: "date"
+        patient:
+          $ref: "#/components/schemas/Patient"
+    Patient:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        name:
+          type: "string"
+        address:
+          $ref: "#/components/schemas/Address"
+        medicalRecords:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/MedicalRecord"
+    Appointment:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        doctor:
+          $ref: "#/components/schemas/Doctor"
+        patient:
+          $ref: "#/components/schemas/Patient"
+        appointmentTime:
+          type: "string"
+          format: "date-time"
+        status:
+          type: "string"

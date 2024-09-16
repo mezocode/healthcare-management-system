@@ -21,34 +21,31 @@ public class Doctor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
     @Enumerated(EnumType.STRING)
     private Specialization specialization;
+
     private int yearsOfExperience;
     private String contactInformation;
     private String workingHours;
 
-    @OneToMany(mappedBy = "doctor")
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Appointment> appointments = new ArrayList<>();
 
     public boolean isAvailable(LocalDateTime dateTime) {
-        // Check if the doctor is available at the given dateTime.
-        // In this example, we'll just check if the doctor has any appointments that overlap with the given dateTime.
-        // In a real application, you would probably need to check the doctor's working hours and other factors.
-
+        LocalDateTime appointmentEnd = dateTime.plusHours(1);
         for (Appointment appointment : appointments) {
-            LocalDateTime appointmentTime = appointment.getAppointmentTime();
+            LocalDateTime existingStart = appointment.getAppointmentTime();
+            LocalDateTime existingEnd = existingStart.plusHours(1);
 
-            // If the doctor has an appointment that starts less than an hour after the given dateTime,
-            // or that ends less than an hour before the given dateTime, then the doctor is not available.
-            if ((appointmentTime.isAfter(dateTime) && appointmentTime.isBefore(dateTime.plusHours(1))) ||
-                    (appointmentTime.plusHours(1).isAfter(dateTime) && appointmentTime.isBefore(dateTime))) {
-                return true;  // Doctor is available
+            // Check if the new appointment overlaps with any existing appointment
+            if (!(dateTime.isAfter(existingEnd) || appointmentEnd.isBefore(existingStart))) {
+                return false;  // Doctor is not available
             }
         }
-
-        // If we've checked all the doctor's appointments and found no conflicts, then the doctor is available.
-        return false;  // Doctor is unavailable
+        return true;  // Doctor is available
     }
 
     public Appointment scheduleAppointment(Patient patient, LocalDateTime dateTime) {
@@ -60,7 +57,17 @@ public class Doctor {
         appointment.setPatient(patient);
         appointment.setAppointmentTime(dateTime);
         appointment.setStatus("Scheduled");
-        appointments.add(appointment);
+        addAppointment(appointment);
         return appointment;
+    }
+
+    public void addAppointment(Appointment appointment) {
+        appointments.add(appointment);
+        appointment.setDoctor(this);
+    }
+
+    public void removeAppointment(Appointment appointment) {
+        appointments.remove(appointment);
+        appointment.setDoctor(null);
     }
 }
